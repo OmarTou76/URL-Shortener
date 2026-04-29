@@ -1,0 +1,23 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+  moduleFormat = "cjs"
+}
+
+// Models definitions
+// [primary key] [default value] [database type]
+model Url {
+  id String @id @default(uuid()) @db.Uuid
+  originalUrl String @unique
+  shortCode String @unique
+  createdAt DateTime @default(now())
+}
+

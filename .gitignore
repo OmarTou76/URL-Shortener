@@ -1,3 +1,5 @@
+.env
+.DS_Store
 
 */node_modules
 */dist
@@ -9,4 +11,4 @@
 */.vscode
 */.idea
 */.DS_Store
-
+*/.env
