@@ -26,5 +26,17 @@ services:
       - ./api:/app
       - /app/node_modules
 
+  web:
+    build: ./web
+    restart: always
+    container_name: web_service
+    ports:
+      - "5173:5173"
+    depends_on:
+      - api
+    volumes:
+      - ./web:/app
+      - /app/node_modules
+
 volumes:
   postgres_data:
