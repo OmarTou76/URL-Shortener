@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Post, Redirect } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Post } from '@nestjs/common';
 import { UrlService } from './url.service';
 import { CreateUrlDto } from './dto/create-url.dto';
 import { UrlResponse } from './url.interfaces';
@@ -8,10 +8,9 @@ import { DeleteUrlDto } from './dto/delete-url.dto';
 export class UrlController {
 	constructor(private readonly urlService: UrlService) { }
 
-
 	@Get()
 	async getAllUrls(): Promise<UrlResponse[]> {
-		return await this.urlService.getOriginalUrls();
+		return await this.urlService.getUrls();
 	}
 
 	@HttpCode(201)
@@ -24,12 +23,4 @@ export class UrlController {
 	async deleteUrl(@Body() deleteUrlDto: DeleteUrlDto): Promise<void> {
 		return await this.urlService.deleteUrl(deleteUrlDto.originalUrl);
 	}
-
-	@Get(':shortCode')
-	@Redirect()
-	async redirectToOriginalUrl(@Param('shortCode') shortCode: string): Promise<{ url: string }> {
-		const originalUrl = await this.urlService.getOriginalUrlFromShortCode(shortCode);
-		return { url: originalUrl };
-	}
-
 }
