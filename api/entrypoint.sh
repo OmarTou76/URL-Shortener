@@ -1,5 +1,8 @@
 #!/bin/sh
 
+echo "Generating Prisma client..."
+pnpx prisma generate
+
 echo "Running migrations..."
 pnpx prisma migrate deploy
 
