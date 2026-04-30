@@ -16,17 +16,15 @@ Full stack URL shortening application
    cd URL-Shortener
    ```
 
-2. Rename or copy .env files name :
+2. Rename or copy the .env file :
 
    ```bash
    mv .env.example .env
-   mv web/.env.example web/.env
    ```
    or 
 
    ```bash
    cp .env.example .env
-   cp web/.env.example web/.env
    ```
 
 3. Start services :
