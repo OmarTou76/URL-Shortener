@@ -4,7 +4,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { Prisma } from 'generated/prisma/client';
+import { Prisma, Url } from 'generated/prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UrlResponse } from './url.interfaces';
 import { ConfigService } from '@nestjs/config';
@@ -59,14 +59,17 @@ export class UrlService {
         },
       });
       return { originalUrl, shortCode: this.normalizeUrl(shortCode) };
-    } catch (e) {
+    } catch (e: unknown) {
       if (
         e instanceof Prisma.PrismaClientKnownRequestError &&
         e.code === 'P2002'
       ) {
-        throw new ConflictException(
-          `The original URL (${originalUrl}) already exists.`,
-        );
+        const response = await this.getUrl(originalUrl)
+        if (!response)
+          throw new InternalServerErrorException(
+            'An error occurred while creating the short URL.',
+          );
+        return response
       }
       throw new InternalServerErrorException(
         'An error occurred while creating the short URL.',
@@ -79,7 +82,7 @@ export class UrlService {
       await this.prisma.url.delete({
         where: { originalUrl },
       });
-    } catch (e) {
+    } catch (e: unknown) {
       if (
         e instanceof Prisma.PrismaClientKnownRequestError &&
         e.code === 'P2025'
@@ -94,7 +97,18 @@ export class UrlService {
     }
   }
 
-  private normalizeUrl(shortCode): string {
+  private async getUrl(url: string): Promise<UrlResponse | null> {
+    const result: Url = await this.prisma.url.findFirst({
+      where: { originalUrl: url },
+    });
+    if (!result) return null
+    return {
+      originalUrl: result.originalUrl,
+      shortCode: this.normalizeUrl(result.shortCode)
+    }
+  }
+
+  private normalizeUrl(shortCode: string): string {
     return `${this.baseUrl}${shortCode}`;
   }
 }
