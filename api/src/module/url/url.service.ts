@@ -27,7 +27,7 @@ export class UrlService {
   async getUrls(): Promise<UrlResponse[]> {
     const urls = await this.prisma.url.findMany({
       select: { originalUrl: true, shortCode: true },
-      orderBy: { createdAt: 'asc' }
+      orderBy: { createdAt: 'desc' }
     });
 
     return urls.map((url) => ({
